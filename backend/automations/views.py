@@ -2,8 +2,8 @@ from django.db.models import Sum,Avg
 from rest_framework import viewsets
 from rest_framework.decorators import api_view,action,action
 from rest_framework.response import Response
-from .models import Workflow,ActivityEvent
-from .serializers import WorkflowSerializer,ActivitySerializer
+from .models import Workflow,ActivityEvent,WorkflowStep
+from .serializers import WorkflowSerializer,ActivitySerializer,WorkflowStepSerializer
 from .services import generate_workflow_suggestion
 
 class WorkflowViewSet(viewsets.ModelViewSet):
@@ -21,6 +21,10 @@ class WorkflowViewSet(viewsets.ModelViewSet):
         workflow.save(update_fields=["runs","success_rate","updated_at"])
         event=ActivityEvent.objects.create(workflow=workflow,message=f"Workflow executed successfully — run #{workflow.runs}")
         return Response({"success":True,"workflow":WorkflowSerializer(workflow).data,"activity":ActivitySerializer(event).data})
+
+class WorkflowStepViewSet(viewsets.ModelViewSet):
+    queryset=WorkflowStep.objects.select_related("workflow").all()
+    serializer_class=WorkflowStepSerializer
 
 class ActivityViewSet(viewsets.ReadOnlyModelViewSet):
     queryset=ActivityEvent.objects.select_related("workflow").all()
