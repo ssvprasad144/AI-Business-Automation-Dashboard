@@ -1,5 +1,15 @@
 services:
   - type: web
+    name: ai-business-automation-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_BASE_URL
+        sync: false
+
+  - type: web
     name: ai-business-automation-api
     runtime: python
     rootDir: backend
