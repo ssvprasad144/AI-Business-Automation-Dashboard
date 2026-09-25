@@ -4,3 +4,4 @@ export const getDashboard=()=>request("/dashboard/");
 export const createWorkflow=(payload)=>request("/workflows/",{method:"POST",body:JSON.stringify(payload)});
 export const getWorkflows=()=>request("/workflows/");
 export const runWorkflow=(id)=>request(`/workflows/${id}/run/`,{method:"POST"});
+export const getActivity=()=>request("/activity/");
