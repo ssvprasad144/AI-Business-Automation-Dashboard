@@ -69,4 +69,28 @@ def ai_suggest(request):
 def demo_lead(request):
     enquiry=request.data.get("enquiry","").strip()
     if not enquiry:return Response({"detail":"enquiry is required"},status=400)
-    return Response(run_lead_demo(enquiry))
+    workflow,_=Workflow.objects.get_or_create(
+        name="AI Lead Qualification Demo",
+        defaults={"trigger":"Manual demo input","status":"active"}
+    )
+    if not workflow.steps.exists():
+        for position,name,action_type in [
+            (1,"Receive enquiry","log"),
+            (2,"AI qualification","ai"),
+            (3,"Prepare suggested response","transform"),
+            (4,"Return result","log")
+        ]:
+            WorkflowStep.objects.create(workflow=workflow,name=name,action_type=action_type,position=position)
+    execution=WorkflowExecution.objects.create(workflow=workflow,input_data={"enquiry":enquiry})
+    result=run_lead_demo(enquiry)
+    execution.status="success"
+    execution.output_data=result
+    execution.finished_at=timezone.now()
+    execution.save(update_fields=["status","output_data","finished_at"])
+    workflow.runs+=1
+    workflow.success_rate=round(((float(workflow.success_rate)*max(workflow.runs-1,0))+100)/workflow.runs,2)
+    workflow.save(update_fields=["runs","success_rate","updated_at"])
+    for step in workflow.steps.all():
+        ActivityEvent.objects.create(workflow=workflow,execution=execution,message=f"Step {step.position}: {step.name} completed")
+    ActivityEvent.objects.create(workflow=workflow,execution=execution,message="Live demo completed successfully")
+    return Response({"success":True,"execution":ExecutionSerializer(execution).data,"demo":result})
