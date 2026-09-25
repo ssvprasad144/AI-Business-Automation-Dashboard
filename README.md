@@ -79,7 +79,10 @@ The public demo does not send email, access a real CRM, or perform arbitrary ext
 
 When `OPENAI_API_KEY` is configured, the demo attempts an AI-powered result. Without it, a deterministic sandbox result is returned so the workflow can still be demonstrated safely.
 
-### 5. Execution History
+### 5. Freelance Enquiry Flow
+After testing a demo, visitors can open a **Build My Automation** enquiry form and submit their name, email, business process, and optional integration need. The request is stored by the Django backend for project discovery; the public demo does not automatically contact third parties.
+
+### 6. Execution History
 The Activity and execution views expose:
 - workflow
 - execution status
@@ -137,6 +140,7 @@ AI provider
 - `POST /api/demo/support/`
 - `POST /api/demo/extract/`
 - `POST /api/demo/message/`
+- `POST /api/enquiry/`
 
 ## Local Development
 
