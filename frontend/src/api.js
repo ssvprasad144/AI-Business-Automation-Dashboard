@@ -5,3 +5,7 @@ export const createWorkflow=(payload)=>request("/workflows/",{method:"POST",body
 export const getWorkflows=()=>request("/workflows/");
 export const runWorkflow=(id)=>request(`/workflows/${id}/run/`,{method:"POST"});
 export const getActivity=()=>request("/activity/");
+export const getExecutions=()=>request("/executions/");
+export const runLeadDemo=(enquiry)=>request("/demo/lead/",{method:"POST",body:JSON.stringify({enquiry})});
+export const getSteps=(workflowId)=>request(`/steps/?workflow=${workflowId}`);
+export const createStep=(payload)=>request("/steps/",{method:"POST",body:JSON.stringify(payload)});
