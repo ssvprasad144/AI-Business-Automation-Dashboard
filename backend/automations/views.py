@@ -67,6 +67,10 @@ class WorkflowViewSet(viewsets.ModelViewSet):
 class WorkflowStepViewSet(viewsets.ModelViewSet):
     queryset=WorkflowStep.objects.select_related("workflow").all()
     serializer_class=WorkflowStepSerializer
+    def get_queryset(self):
+        qs=super().get_queryset()
+        workflow_id=self.request.query_params.get("workflow")
+        return qs.filter(workflow_id=workflow_id) if workflow_id else qs
 
 class ExecutionViewSet(viewsets.ReadOnlyModelViewSet):
     queryset=WorkflowExecution.objects.select_related("workflow").all()
