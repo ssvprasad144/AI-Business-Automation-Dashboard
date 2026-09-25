@@ -1,10 +1,11 @@
 from django.db.models import Sum,Avg
+from django.utils import timezone
 from rest_framework import viewsets
-from rest_framework.decorators import api_view,action,action
+from rest_framework.decorators import api_view,action
 from rest_framework.response import Response
-from .models import Workflow,ActivityEvent,WorkflowStep
-from .serializers import WorkflowSerializer,ActivitySerializer,WorkflowStepSerializer
-from .services import generate_workflow_suggestion
+from .models import Workflow,ActivityEvent,WorkflowStep,WorkflowExecution
+from .serializers import WorkflowSerializer,ActivitySerializer,WorkflowStepSerializer,ExecutionSerializer
+from .services import generate_workflow_suggestion,run_lead_demo
 
 class WorkflowViewSet(viewsets.ModelViewSet):
     queryset=Workflow.objects.all()
@@ -15,6 +16,14 @@ class WorkflowViewSet(viewsets.ModelViewSet):
         workflow=self.get_object()
         if workflow.status != "active":
             return Response({"detail":"Only active workflows can be executed."}, status=400)
+        execution=WorkflowExecution.objects.create(workflow=workflow,input_data=request.data or {})
+        completed=[]
+        steps=list(workflow.steps.all())
+        if not steps:
+            steps=[WorkflowStep.objects.create(workflow=workflow,name="Execution recorded",action_type="log",position=1)]
+        for step in steps:
+            ActivityEvent.objects.create(workflow=workflow,execution=execution,message=f"Step {step.position}: {step.name} completed")
+            completed.append({"name":step.name,"action_type":step.action_type,"position":step.position,"status":"completed"})
         workflow.runs += 1
         previous=float(workflow.success_rate)
         workflow.success_rate=round(((previous*(workflow.runs-1))+100)/workflow.runs,2)
@@ -31,6 +40,10 @@ class WorkflowViewSet(viewsets.ModelViewSet):
 class WorkflowStepViewSet(viewsets.ModelViewSet):
     queryset=WorkflowStep.objects.select_related("workflow").all()
     serializer_class=WorkflowStepSerializer
+
+class ExecutionViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset=WorkflowExecution.objects.select_related("workflow").all()
+    serializer_class=ExecutionSerializer
 
 class ActivityViewSet(viewsets.ReadOnlyModelViewSet):
     queryset=ActivityEvent.objects.select_related("workflow").all()
