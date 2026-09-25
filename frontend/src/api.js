@@ -12,3 +12,5 @@ export const runExtractDemo=(text)=>request("/demo/extract/",{method:"POST",body
 export const runMessageDemo=(payload)=>request("/demo/message/",{method:"POST",body:JSON.stringify(payload)});
 export const getSteps=(workflowId)=>request(`/steps/?workflow=${workflowId}`);
 export const createStep=(payload)=>request("/steps/",{method:"POST",body:JSON.stringify(payload)});
+
+export const submitEnquiry=(payload)=>request("/enquiry/",{method:"POST",body:JSON.stringify(payload)});
