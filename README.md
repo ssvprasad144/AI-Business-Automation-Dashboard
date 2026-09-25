@@ -21,7 +21,7 @@ A user describes a repetitive business process. The backend can use OpenAI to pr
 - action steps
 - expected value
 
-The proposal can be saved as a workflow.
+The proposal is parsed into a structured workflow preview. When saved, the generated trigger and ordered action steps become real `Workflow` and `WorkflowStep` records.
 
 ### 2. Workflow Management
 Each workflow contains:
