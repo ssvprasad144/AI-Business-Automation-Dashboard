@@ -54,9 +54,10 @@ def generate_workflow_suggestion(description):
 Business process: {description}
 Return JSON with keys workflow_name, trigger, steps (three objects with name and action_type using ai, transform, webhook, email, or log), and business_value."""
         )
-        parsed=_parse_workflow(response.output_text)\n        return {"configured":True,"proposal":response.output_text,"workflow":parsed}
+        parsed=_parse_workflow(response.output_text)
+        return {"configured":True,"proposal":response.output_text,"workflow":parsed}
     except Exception:
-        return {"configured":False,"proposal":json.dumps(fallback,indent=2)}
+        return {"configured":False,"proposal":json.dumps(fallback,indent=2),"workflow":fallback}
 
 def run_lead_demo(enquiry):
     fallback=_lead_fallback(enquiry)
