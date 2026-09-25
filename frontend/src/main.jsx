@@ -2,7 +2,7 @@ import React,{useMemo,useState} from "react";
 import {createRoot} from "react-dom/client";
 import {Activity,ArrowUpRight,Bell,BrainCircuit,CheckCircle2,ChevronRight,Clock3,LayoutDashboard,Menu,Plus,Settings,ShieldCheck,Sparkles,Workflow,Zap,Send,LoaderCircle} from "lucide-react";
 import "./styles.css";
-import {getDashboard,createWorkflow} from "./api";
+import {getDashboard,createWorkflow,runWorkflow} from "./api";
 
 const initialWorkflows=[
  {name:"Lead qualification",trigger:"New form submission",runs:128,status:"Active",success:"96%"},
@@ -12,7 +12,7 @@ const initialWorkflows=[
 ];
 const activity=[["Lead qualification","Completed successfully","2 min ago"],["Support reply assistant","AI draft generated","18 min ago"],["Invoice follow-up","Completed successfully","42 min ago"],["Weekly sales summary","Workflow paused","1 hr ago"]];
 function App(){
- const [mobile,setMobile]=useState(false); const [aiInput,setAiInput]=useState(""); const [aiResult,setAiResult]=useState(""); const [aiLoading,setAiLoading]=useState(false); const [aiCreated,setAiCreated]=useState(false); const [tab,setTab]=useState("Overview"); const [workflows,setWorkflows]=useState(initialWorkflows); const [stats,setStats]=useState(null); const [apiState,setApiState]=useState("demo");
+ const [mobile,setMobile]=useState(false); const [aiInput,setAiInput]=useState(""); const [aiResult,setAiResult]=useState(""); const [aiLoading,setAiLoading]=useState(false); const [aiCreated,setAiCreated]=useState(false); const [running,setRunning]=useState(null); const [tab,setTab]=useState("Overview"); const [workflows,setWorkflows]=useState(initialWorkflows); const [stats,setStats]=useState(null); const [apiState,setApiState]=useState("demo");
  React.useEffect(()=>{getDashboard().then(d=>{setStats(d);setWorkflows(d.workflows?.length?d.workflows:initialWorkflows);setApiState("live")}).catch(()=>setApiState("demo"))},[]);
  const visible=useMemo(()=>tab==="Overview"?workflows:tab==="Automations"?workflows.filter(x=>true):workflows,[tab,workflows]);
  async async function suggest(){if(!aiInput.trim())return;setAiLoading(true);setAiResult("");setAiCreated(false);try{const r=await fetch((import.meta.env.VITE_API_BASE_URL||"http://127.0.0.1:8000/api")+"/ai/suggest/",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({description:aiInput})});const d=await r.json();setAiResult(d.proposal||d.message||d.detail||"No suggestion returned.");}catch{setAiResult("Connect the Django API and configure OPENAI_API_KEY to use AI suggestions.")}finally{setAiLoading(false)}}
