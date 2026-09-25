@@ -26,7 +26,6 @@ services:
       - key: OPENAI_MODEL
         value: gpt-5-mini
 
-  - type: pserv
-    name: ai-business-automation-db
-    runtime: postgres
+databases:
+  - name: ai-business-automation-db
     plan: free
