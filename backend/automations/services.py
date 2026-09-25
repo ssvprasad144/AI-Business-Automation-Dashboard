@@ -19,6 +19,20 @@ def _ai_text(instruction, fallback):
     except Exception:
         return fallback
 
+def _parse_workflow(raw):
+    try:
+        value=json.loads(raw)
+        if isinstance(value,dict) and isinstance(value.get("steps"),list):
+            steps=[]
+            for step in value["steps"][:6]:
+                if isinstance(step,dict):
+                    steps.append({"name":str(step.get("name","Workflow step"))[:160],"action_type":step.get("action_type","transform") if step.get("action_type") in {"ai","transform","webhook","email","log"} else "transform"})
+            if steps:
+                return {"workflow_name":str(value.get("workflow_name","AI-assisted workflow"))[:160],"trigger":str(value.get("trigger","Manual trigger"))[:200],"steps":steps,"business_value":str(value.get("business_value","Automate repetitive processing."))}
+    except Exception:
+        pass
+    return None
+
 def generate_workflow_suggestion(description):
     fallback={
         "workflow_name":"AI-assisted business workflow",
@@ -32,7 +46,7 @@ def generate_workflow_suggestion(description):
     }
     client=_client()
     if not client:
-        return {"configured":False,"proposal":json.dumps(fallback,indent=2)}
+        return {"configured":False,"proposal":json.dumps(fallback,indent=2),"workflow":fallback}
     try:
         response=client.responses.create(
             model=_model(),
@@ -40,7 +54,7 @@ def generate_workflow_suggestion(description):
 Business process: {description}
 Return JSON with keys workflow_name, trigger, steps (three objects with name and action_type using ai, transform, webhook, email, or log), and business_value."""
         )
-        return {"configured":True,"proposal":response.output_text}
+        parsed=_parse_workflow(response.output_text)\n        return {"configured":True,"proposal":response.output_text,"workflow":parsed}
     except Exception:
         return {"configured":False,"proposal":json.dumps(fallback,indent=2)}
 
