@@ -3,8 +3,8 @@ from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import api_view,action
 from rest_framework.response import Response
-from .models import Workflow,WorkflowStep,WorkflowExecution,ActivityEvent
-from .serializers import WorkflowSerializer,WorkflowStepSerializer,ExecutionSerializer,ActivitySerializer
+from .models import Workflow,WorkflowStep,WorkflowExecution,ActivityEvent,AutomationEnquiry
+from .serializers import WorkflowSerializer,WorkflowStepSerializer,ExecutionSerializer,ActivitySerializer,AutomationEnquirySerializer
 from .services import generate_workflow_suggestion,run_lead_demo,run_support_demo,run_extraction_demo,run_message_demo
 
 DEMO_CONFIGS={
@@ -117,3 +117,12 @@ def _run_demo(key,input_data,result):
     workflow=_demo_workflow(key)
     execution=_record_demo(workflow,input_data,result)
     return Response({"success":True,"execution":ExecutionSerializer(execution).data,"demo":result})
+
+
+@api_view(["POST"])
+def automation_enquiry(request):
+    serializer=AutomationEnquirySerializer(data=request.data)
+    if not serializer.is_valid():
+        return Response({"detail":"Please provide a valid name, email, business process, and optional integration.","errors":serializer.errors},status=400)
+    enquiry=serializer.save()
+    return Response({"success":True,"message":"Enquiry received. This demo stores the request for follow-up; no external message is sent.","enquiry":AutomationEnquirySerializer(enquiry).data},status=201)
