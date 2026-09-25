@@ -53,7 +53,11 @@ The execution layer:
 This is the internal execution framework. External actions such as sending a real email or modifying a CRM require a separately configured integration.
 
 ### 4. Live Automation Demo
-The dashboard contains a sandboxed **AI Lead Qualification** demo.
+The dashboard contains a **Live Automation Lab** with four sandboxed demonstrations:
+- **AI Lead Qualification** — classify a fictional enquiry and generate a suggested response.
+- **AI Customer Support** — identify intent and answer from a small demo knowledge base.
+- **AI Data Extraction** — convert unstructured business text into structured fields.
+- **AI Message Generator** — draft a professional message for preview without sending it.
 
 Visitor flow:
 
@@ -130,6 +134,9 @@ AI provider
 - `GET /api/activity/`
 - `POST /api/ai/suggest/`
 - `POST /api/demo/lead/`
+- `POST /api/demo/support/`
+- `POST /api/demo/extract/`
+- `POST /api/demo/message/`
 
 ## Local Development
 
