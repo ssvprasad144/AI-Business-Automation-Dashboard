@@ -2,87 +2,66 @@
 
 > Portfolio project by **SSVPrasad** demonstrating a client-style AI automation platform.
 
-A full-stack business automation dashboard designed to centralize AI-assisted workflows, automation jobs, integrations, activity, and operational insights in one interface.
-
-## Product Overview
-
-This project is intentionally built as a realistic portfolio product rather than presented as a real client engagement. It demonstrates how I approach business software that combines:
-
-- AI-assisted workflows
-- Automation management
-- API integrations
-- Authentication and role-aware architecture
-- Dashboard analytics
-- Backend APIs
-- PostgreSQL-ready persistence
-- Production-oriented deployment
-
-## Core Features
-
-- 📊 Business dashboard with workflow and activity summaries
-- 🤖 AI automation workspace
-- ⚙️ Automation creation and management
-- 🔌 Integration-ready API layer
-- 📝 Activity and execution history
-- 🔐 Authentication-ready architecture
-- 📈 Operational metrics and status views
-- 📱 Responsive interface for desktop and mobile
+A full-stack business automation dashboard for designing, monitoring, and extending AI-assisted business workflows.
 
 ## Architecture
 
-```text
-React + Vite
-     │
-     │ REST API
-     ▼
-Django REST API
-     │
-     ├── Authentication
-     ├── Automations
-     ├── AI services
-     ├── Integrations
-     └── Activity
-     │
-     ▼
-PostgreSQL
+```
+React + Vite → Django REST Framework → PostgreSQL
+                         │
+                         └── OpenAI workflow suggestions
 ```
 
-## Planned Stack
+## Implemented
 
-| Layer | Technology |
-|---|---|
-| Frontend | React, Vite, JavaScript |
-| UI | CSS, responsive dashboard components |
-| Backend | Django, Django REST Framework |
-| Database | PostgreSQL |
-| AI | OpenAI API |
-| Authentication | Django authentication / token-ready API |
-| Deployment | Render-ready configuration |
-| Version Control | Git, GitHub |
+- Responsive React dashboard
+- Workflow management UI
+- Django REST API
+- PostgreSQL-ready models and migrations
+- Dashboard aggregation endpoint
+- Activity API
+- OpenAI workflow suggestion service
+- Environment-based configuration
+- Django admin
+- Production-ready backend dependencies
 
-## Engineering Focus
+## API
 
-This project focuses on the engineering patterns that matter for freelance work:
+- `GET /api/dashboard/`
+- `GET /api/workflows/`
+- `POST /api/workflows/`
+- `GET /api/activity/`
+- `POST /api/ai/suggest/`
 
-- Clean separation between frontend and backend
-- Reusable API boundaries
-- Secure handling of secrets through environment variables
-- Database-backed workflow state
-- Extensible integration architecture
-- Clear error and loading states
-- Production-oriented configuration
+## Local Development
 
-## Status
+### Backend
+```bash
+cd backend
+python -m venv .venv
+# Windows: .venv\\Scripts\\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver
+```
 
-🚧 **Active portfolio project**
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-The repository is being developed incrementally. Features are added as working implementations rather than represented as completed functionality before they exist.
+Copy `.env.example` to `.env`. Keep real API keys out of Git.
+
+## AI Workflow Suggestion
+
+`POST /api/ai/suggest/` accepts a business-process description and, when `OPENAI_API_KEY` is configured, returns an AI-generated workflow proposal.
+
+This is a portfolio implementation; no real client results or customer claims are represented.
 
 ## Developer
 
-**SSVPrasad**  
-Full-Stack Developer · AI Integration · Backend · 3D Web
+**SSVPrasad** — Full-Stack Developer · AI Integration · Backend · 3D Web
 
 Portfolio: https://ssvprasad144.github.io/3d-motion-portfolio/
-
-GitHub: https://github.com/ssvprasad144
