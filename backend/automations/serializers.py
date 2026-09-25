@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Workflow,WorkflowStep,WorkflowExecution,ActivityEvent
+from .models import Workflow,WorkflowStep,WorkflowExecution,ActivityEvent,AutomationEnquiry
 
 class WorkflowStepSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,3 +25,10 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model=ActivityEvent
         fields=["id","workflow","execution","message","created_at"]
+
+
+class AutomationEnquirySerializer(serializers.ModelSerializer):
+    class Meta:
+        model=AutomationEnquiry
+        fields=["id","name","email","business_process","integration","created_at"]
+        read_only_fields=["id","created_at"]
