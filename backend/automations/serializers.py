@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Workflow,ActivityEvent
+from .models import Workflow,ActivityEvent,WorkflowStep
 class WorkflowSerializer(serializers.ModelSerializer):
     success=serializers.SerializerMethodField()
     class Meta:
@@ -11,3 +11,8 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model=ActivityEvent
         fields=["id","workflow","message","created_at"]
+
+class WorkflowStepSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=WorkflowStep
+        fields=["id","workflow","name","action_type","position","config"]
