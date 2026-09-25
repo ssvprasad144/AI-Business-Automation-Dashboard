@@ -92,6 +92,10 @@ class ActivityViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class=ActivitySerializer
 
 @api_view(["GET"])
+def health(request):
+    return Response({"status":"ok","service":"AI Business Automation Dashboard"})
+
+@api_view(["GET"])
 def dashboard(request):
     qs=Workflow.objects.all()
     total_runs=qs.aggregate(total=Sum("runs"))["total"] or 0
