@@ -15,3 +15,14 @@ class ActivityEvent(models.Model):
     message=models.CharField(max_length=240)
     created_at=models.DateTimeField(auto_now_add=True)
     class Meta: ordering=["-created_at"]
+
+class WorkflowStep(models.Model):
+    ACTION_CHOICES=[("ai","AI Process"),("webhook","Webhook"),("email","Email"),("transform","Transform"),("log","Log")]
+    workflow=models.ForeignKey(Workflow,on_delete=models.CASCADE,related_name="steps")
+    name=models.CharField(max_length=160)
+    action_type=models.CharField(max_length=30,choices=ACTION_CHOICES,default="ai")
+    position=models.PositiveIntegerField(default=1)
+    config=models.JSONField(default=dict,blank=True)
+    class Meta:
+        ordering=["position","id"]
+    def __str__(self): return f"{self.workflow.name} · {self.name}"
