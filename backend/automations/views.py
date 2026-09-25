@@ -19,8 +19,14 @@ class WorkflowViewSet(viewsets.ModelViewSet):
         previous=float(workflow.success_rate)
         workflow.success_rate=round(((previous*(workflow.runs-1))+100)/workflow.runs,2)
         workflow.save(update_fields=["runs","success_rate","updated_at"])
+        step_events=[]
+        steps=workflow.steps.all()
+        if not steps.exists():
+            steps=WorkflowStep.objects.create(workflow=workflow,name="Execution recorded",action_type="log",position=1),
+        for step in steps:
+            step_events.append(ActivityEvent.objects.create(workflow=workflow,message=f"Step {step.position}: {step.name} completed"))
         event=ActivityEvent.objects.create(workflow=workflow,message=f"Workflow executed successfully — run #{workflow.runs}")
-        return Response({"success":True,"workflow":WorkflowSerializer(workflow).data,"activity":ActivitySerializer(event).data})
+        return Response({"success":True,"workflow":WorkflowSerializer(workflow).data,"steps":[{"name":s.name,"action_type":s.action_type,"position":s.position,"status":"completed"} for s in steps],"activity":ActivitySerializer(event).data})
 
 class WorkflowStepViewSet(viewsets.ModelViewSet):
     queryset=WorkflowStep.objects.select_related("workflow").all()
