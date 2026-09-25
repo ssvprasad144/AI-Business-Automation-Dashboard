@@ -1,0 +1,6 @@
+from django.db import migrations, models
+import django.db.models.deletion
+
+class Migration(migrations.Migration):
+    dependencies=[('automations','0002_workflowstep')]
+    operations=[migrations.CreateModel(name='WorkflowExecution',fields=[('id',models.BigAutoField(auto_created=True,primary_key=True,serialize=False,verbose_name='ID')),('status',models.CharField(default='running',max_length=20)),('input_data',models.JSONField(blank=True,default=dict)),('output_data',models.JSONField(blank=True,default=dict)),('error',models.TextField(blank=True)),('started_at',models.DateTimeField(auto_now_add=True)),('finished_at',models.DateTimeField(blank=True,null=True)),('workflow',models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,related_name='executions',to='automations.workflow'))]),migrations.AddField(model_name='activityevent',name='execution',field=models.ForeignKey(blank=True,null=True,on_delete=django.db.models.deletion.SET_NULL,related_name='events',to='automations.workflowexecution'))]
