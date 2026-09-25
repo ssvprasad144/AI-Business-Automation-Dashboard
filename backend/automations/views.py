@@ -22,25 +22,6 @@ class WorkflowViewSet(viewsets.ModelViewSet):
         event=ActivityEvent.objects.create(workflow=workflow,message=f"Workflow executed successfully — run #{workflow.runs}")
         return Response({"success":True,"workflow":WorkflowSerializer(workflow).data,"activity":ActivitySerializer(event).data})
 
-    @action(detail=True, methods=["post"], url_path="run")
-    def run(self, request, pk=None):
-        workflow=self.get_object()
-        if workflow.status != "active":
-            return Response({"detail":"Only active workflows can be executed."}, status=400)
-        workflow.runs += 1
-        previous=float(workflow.success_rate)
-        workflow.success_rate=round(((previous*(workflow.runs-1))+100)/workflow.runs,2)
-        workflow.save(update_fields=["runs","success_rate","updated_at"])
-        event=ActivityEvent.objects.create(
-            workflow=workflow,
-            message=f"Workflow executed successfully — run #{workflow.runs}"
-        )
-        return Response({
-            "success": True,
-            "workflow": WorkflowSerializer(workflow).data,
-            "activity": ActivitySerializer(event).data
-        })
-
 class ActivityViewSet(viewsets.ReadOnlyModelViewSet):
     queryset=ActivityEvent.objects.select_related("workflow").all()
     serializer_class=ActivitySerializer
