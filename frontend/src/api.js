@@ -6,7 +6,7 @@ export const getWorkflows=()=>request("/workflows/");
 export const runWorkflow=(id)=>request(`/workflows/${id}/run/`,{method:"POST"});
 export const getActivity=()=>request("/activity/");
 export const getExecutions=()=>request("/executions/");
-export const runLeadDemo=(enquiry)=>request("/demo/lead/",{method:"POST"});
+export const runLeadDemo=(enquiry)=>request("/demo/lead/",{method:"POST",body:JSON.stringify({enquiry})});
 export const runSupportDemo=(question)=>request("/demo/support/",{method:"POST",body:JSON.stringify({question})});
 export const runExtractDemo=(text)=>request("/demo/extract/",{method:"POST",body:JSON.stringify({text})});
 export const runMessageDemo=(payload)=>request("/demo/message/",{method:"POST",body:JSON.stringify(payload)});
