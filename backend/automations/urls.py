@@ -1,6 +1,6 @@
 from django.urls import include,path
 from rest_framework.routers import DefaultRouter
-from .views import WorkflowViewSet,WorkflowStepViewSet,ExecutionViewSet,ActivityViewSet,dashboard,ai_suggest,demo_lead,demo_support,demo_extract,demo_message,automation_enquiry
+from .views import WorkflowViewSet,WorkflowStepViewSet,ExecutionViewSet,ActivityViewSet,dashboard,ai_suggest,demo_lead,demo_support,demo_extract,demo_message,automation_enquiry,health
 router=DefaultRouter()
 router.register("workflows",WorkflowViewSet,basename="workflow")
 router.register("steps",WorkflowStepViewSet,basename="step")
