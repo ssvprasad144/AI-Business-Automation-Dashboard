@@ -1,6 +1,6 @@
 from django.db.models import Sum,Avg
 from rest_framework import viewsets
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,action
 from rest_framework.response import Response
 from .models import Workflow,ActivityEvent
 from .serializers import WorkflowSerializer,ActivitySerializer
@@ -9,6 +9,25 @@ from .services import generate_workflow_suggestion
 class WorkflowViewSet(viewsets.ModelViewSet):
     queryset=Workflow.objects.all()
     serializer_class=WorkflowSerializer
+
+    @action(detail=True, methods=["post"], url_path="run")
+    def run(self, request, pk=None):
+        workflow=self.get_object()
+        if workflow.status != "active":
+            return Response({"detail":"Only active workflows can be executed."}, status=400)
+        workflow.runs += 1
+        previous=float(workflow.success_rate)
+        workflow.success_rate=round(((previous*(workflow.runs-1))+100)/workflow.runs,2)
+        workflow.save(update_fields=["runs","success_rate","updated_at"])
+        event=ActivityEvent.objects.create(
+            workflow=workflow,
+            message=f"Workflow executed successfully — run #{workflow.runs}"
+        )
+        return Response({
+            "success": True,
+            "workflow": WorkflowSerializer(workflow).data,
+            "activity": ActivitySerializer(event).data
+        })
 
 class ActivityViewSet(viewsets.ReadOnlyModelViewSet):
     queryset=ActivityEvent.objects.select_related("workflow").all()
