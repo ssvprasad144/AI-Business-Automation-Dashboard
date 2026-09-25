@@ -6,4 +6,4 @@ router.register("workflows",WorkflowViewSet,basename="workflow")
 router.register("steps",WorkflowStepViewSet,basename="step")
 router.register("executions",ExecutionViewSet,basename="execution")
 router.register("activity",ActivityViewSet,basename="activity")
-urlpatterns=[path("dashboard/",dashboard),path("ai/suggest/",ai_suggest),path("demo/lead/",demo_lead),path("demo/support/",demo_support),path("demo/extract/",demo_extract),path("demo/message/",demo_message),path("enquiry/",automation_enquiry),path("",include(router.urls))]
+urlpatterns=[path("health/",health),path("dashboard/",dashboard),path("ai/suggest/",ai_suggest),path("demo/lead/",demo_lead),path("demo/support/",demo_support),path("demo/extract/",demo_extract),path("demo/message/",demo_message),path("enquiry/",automation_enquiry),path("",include(router.urls))]
